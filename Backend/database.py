@@ -1,47 +1,53 @@
-from sqlalchemy import create_engine, text
-from sqlalchemy.engine import URL
+
+import os
+from pathlib import Path
+
+from dotenv import load_dotenv
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-# 1. Database connection URL
-connection_url = URL.create(
-    "mssql+pyodbc",
-    host=r"DESKTOP-8CEP79S\SQLEXPRESS",
-    database="AITaskAssistantDB",
-    query={
-        "driver": "ODBC Driver 18 for SQL Server",
-        "Trusted_Connection": "yes",
-        "TrustServerCertificate": "yes",
-    },
-)
+# Load .env from the project root
+ROOT_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(ROOT_DIR / ".env")
 
-# 2. Create database engine
+# Read PostgreSQL connection string
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL environment variable is not set")
+
+# Configure PostgreSQL driver for SQLAlchemy
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace(
+        "postgres://",
+        "postgresql+psycopg://",
+        1
+    )
+elif DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace(
+        "postgresql://",
+        "postgresql+psycopg://",
+        1
+    )
+
+# Create database engine
 engine = create_engine(
-    connection_url,
+    DATABASE_URL,
     pool_pre_ping=True,
 )
 
-# 3. Create session factory
+# Create session factory
 SessionLocal = sessionmaker(
     bind=engine,
     autoflush=False,
     autocommit=False,
 )
 
-# 4. Test database connection
-with engine.connect() as connection:
-    database_name = connection.execute(
-        text("SELECT DB_NAME()")
-    ).scalar()
-
-    print("Connected successfully to:", database_name)
-
-
-# 5. Database dependency
+# Database dependency
 def get_db():
     db = SessionLocal()
 
     try:
         yield db
-
     finally:
         db.close()
