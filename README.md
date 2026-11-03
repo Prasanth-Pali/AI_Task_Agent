@@ -1,299 +1,380 @@
 # 🤖 AI Task Agent
 
-An AI-powered task management application that allows users to manage their tasks using natural language. Instead of manually navigating through forms or endpoints, users can interact with an AI agent to create, retrieve, update, and delete tasks through conversational commands.
+An AI-powered Task Management application built using **FastAPI, Angular, LangChain, Groq LLM, and PostgreSQL**. It allows users to manage tasks using natural language while providing traditional REST APIs for task operations.
 
-Built using **Python, FastAPI, LangChain, Groq LLM, Angular, and Microsoft SQL Server**, this project demonstrates how LLM-powered agents can interact with real-world backend APIs and databases using tool calling.
+The AI agent understands user instructions, selects the appropriate tools, communicates with the Task API, and performs task operations against the database.
 
-## ✨ Key Features
+## 🚀 Live Application
 
-- 🧠 **AI-Powered Conversations** – Interact with the application using natural language.
-- 🤖 **AI Agent Integration** – Uses LangChain agents to understand requests and decide which tools to execute.
-- 🛠️ **Tool Calling** – Connects AI reasoning with actual backend API operations.
-- 📋 **Task Retrieval** – Retrieve all tasks and access individual task details.
-- ➕ **Task Creation** – Create new tasks through conversational instructions.
-- ✏️ **Task Updates** – Modify existing task details and status.
-- 🗑️ **Task Deletion** – Delete tasks using natural-language commands.
-- 💬 **Angular Chat Interface** – User-friendly conversational interface.
-- ⚡ **RESTful APIs** – FastAPI handles backend operations.
-- 🗄️ **SQL Server Integration** – Persistent task storage using SQLAlchemy.
-- ✅ **Data Validation** – Pydantic schemas for request validation.
+- **Frontend:** https://ai-task-agent-frontend-0h60.onrender.com/
+- **Backend API:** https://ai-task-agent-urna.onrender.com
+- **Swagger Documentation:** https://ai-task-agent-urna.onrender.com/docs
 
-## 🧰 Technology Stack
+## ✨ Features
 
-| Technology | Purpose |
+### 🤖 AI-Powered Task Assistant
+- Interact with the application using natural language.
+- Retrieve all tasks through conversational commands.
+- Create tasks with titles, descriptions, due dates, and statuses.
+- Update existing tasks.
+- Delete tasks using their Task IDs.
+- Uses LangChain tools to connect the AI agent with backend functionality.
+
+### 📋 Task Management
+- Create, retrieve, update, and delete tasks.
+- Manage task statuses:
+  - Pending
+  - InProgress
+  - Completed
+- Store task descriptions and due dates.
+- Persist task records in PostgreSQL.
+
+### 🔧 Backend
+- RESTful APIs built using FastAPI.
+- SQLAlchemy for database connectivity and ORM.
+- Centralized API communication through reusable functions.
+- HTTP error handling and request timeouts.
+- CORS configuration for frontend-backend communication.
+
+### 🎨 Frontend
+- Angular standalone components.
+- Chat-based user interface.
+- Integration with FastAPI endpoints.
+- HTTP communication through Angular services.
+
+### ☁️ Deployment & CI/CD
+- Backend deployed on Render.
+- Angular frontend deployed as a Render Static Site.
+- PostgreSQL database hosted on Render.
+- GitHub Actions for automated CI checks.
+- Automatic deployment through Render when changes are pushed to GitHub.
+
+## 🛠️ Technology Stack
+
+| Category | Technologies |
 |---|---|
-| Python | AI agent and backend development |
-| LangChain | Agent orchestration and tool calling |
-| Groq LLM | Natural-language understanding |
-| FastAPI | REST API development |
-| Angular | Frontend and chat interface |
-| TypeScript | Frontend application logic |
-| SQL Server | Relational database |
-| SQLAlchemy | ORM and database connectivity |
-| Pydantic | Data validation |
-| Uvicorn | ASGI application server |
-| Git & GitHub | Version control |
+| Frontend | Angular, TypeScript, HTML, CSS |
+| Backend | Python, FastAPI |
+| AI Framework | LangChain |
+| LLM Provider | Groq |
+| Database | PostgreSQL |
+| ORM | SQLAlchemy |
+| HTTP Client | Requests |
+| API Documentation | Swagger / OpenAPI |
+| Version Control | Git, GitHub |
+| CI/CD | GitHub Actions |
+| Cloud Hosting | Render |
 
-## 🏗️ System Architecture
+## 🏗️ Application Architecture
 
-              User
-               |
-               v
-       Angular Chat Interface
-               |
-               v
-          FastAPI Backend
-               |
-               v
-        LangChain AI Agent
-               |
-               v
-          Groq LLM
-               |
-       Understands Intent
-               |
-               v
-       Selects Appropriate Tool
-               |
-               v
-       Python Tool Functions
-               |
-               v
-         REST API Calls
-               |
-               v
-           SQLAlchemy
-               |
-               v
-        Microsoft SQL Server
-               |
-               v
-         API Response
-               |
-               v
-       AI Agent Processes Result
-               |
-               v
-       Natural Language Response
-               |
-               v
-             User
+```mermaid
+flowchart TD
+    A[User] --> B[Angular Frontend]
+    B -->|HTTP Requests| C[FastAPI Backend]
+    C --> D[LangChain AI Agent]
+    D --> E[Groq LLM]
+    D --> F[Task Management Tools]
+    F -->|Internal HTTP Requests| C
+    C --> G[SQLAlchemy ORM]
+    G --> H[(PostgreSQL Database)]
+    H --> G
+    G --> C
+    C --> B
+    B --> A
+```
 
-### 🔄 How It Works
+### AI Agent Workflow
 
-1. The user enters a task-related instruction in the Angular chat interface.
-2. The request is sent to the FastAPI backend.
-3. The LangChain agent uses the Groq LLM to understand the user's intent.
-4. Based on the request, the agent selects the appropriate tool.
-5. The selected Python tool communicates with the backend REST API.
-6. FastAPI performs the required database operation using SQLAlchemy.
-7. SQL Server returns the operation result.
-8. The agent processes the result and generates a natural-language response.
-9. The response is displayed in the Angular chat interface.
+1. The user enters a natural language instruction in the Angular chat interface.
+2. Angular sends the request to the FastAPI chat endpoint.
+3. LangChain passes the user's question to the Groq-powered AI agent.
+4. The agent identifies the appropriate task management tool.
+5. The selected tool sends an HTTP request to the Task API.
+6. FastAPI processes the request and communicates with PostgreSQL through SQLAlchemy.
+7. The result is returned to the AI agent.
+8. The agent generates a user-friendly response.
+9. Angular displays the final response.
 
 ## 📁 Project Structure
 
+```text
 AI_Task_Agent/
 │
 ├── Backend/
-│   ├── __init__.py
-│   ├── database.py
-│   ├── DB_Script/
-│   ├── llm.py
 │   ├── main.py
+│   ├── database.py
 │   ├── models.py
-│   ├── schemas.py
 │   ├── tools.py
-│   └── requirements.txt
+│   ├── requirements.txt
+│   └── ...
 │
 ├── Frontend/
 │   ├── src/
 │   │   ├── app/
-│   │   ├── assets/
+│   │   │   ├── components/
+│   │   │   ├── services/
+│   │   │   └── ...
 │   │   └── environments/
 │   ├── angular.json
 │   ├── package.json
-│   └── tsconfig.json
+│   └── ...
+│
+├── .github/
+│   └── workflows/
+│       └── ci-cd.yml
 │
 ├── .env
 ├── .gitignore
 └── README.md
+```
 
-## ⚙️ Prerequisites
+## 🗄️ Database Design
 
-Make sure you have installed:
+The application uses PostgreSQL to persist task information.
+
+### Tasks Table
+
+| Column | Description |
+|---|---|
+| TaskId | Unique task identifier |
+| Title | Task title |
+| Status | Current task status |
+| CreatedAtUtc | Task creation timestamp |
+| Description | Optional task description |
+| DueDateUtc | Optional task due date |
+| UpdatedAtUtc | Last updated timestamp |
+
+SQLAlchemy models are used to map application objects to database records.
+
+## 🔌 API Endpoints
+
+Base URL:
+
+```text
+https://ai-task-agent-urna.onrender.com
+```
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/tasks` | Retrieve all tasks |
+| POST | `/api/tasks` | Create a task |
+| PATCH | `/api/tasks/{task_id}` | Update a task |
+| DELETE | `/api/tasks/{task_id}` | Delete a task |
+| POST | `/api/chat` | Interact with the AI assistant |
+
+Interactive API documentation:
+
+`/docs`
+
+## ⚙️ Local Development Setup
+
+### Prerequisites
 
 - Python 3.11+
 - Node.js and npm
 - Angular CLI
-- Microsoft SQL Server
-- SQL Server Management Studio (SSMS)
-- Groq API Key
-
-## 🚀 Installation and Setup
+- Git
+- PostgreSQL database
+- Groq API key
 
 ### 1. Clone the Repository
 
+```bash
 git clone https://github.com/Prasanth-Pali/AI_Task_Agent.git
 
 cd AI_Task_Agent
+```
 
 ### 2. Backend Setup
 
-Navigate to the backend directory:
+Navigate to the project root and create a virtual environment:
 
-cd Backend
-
-Create a virtual environment:
-
+```bash
 python -m venv .venv
+```
 
+Activate it on Windows PowerShell:
 
-Activate the environment on Windows:
+```powershell
+.venv\Scripts\Activate.ps1
+```
 
+Install backend dependencies:
 
-.venv\Scripts\activate
-
-
-Install dependencies:
-
-
-pip install -r requirements.txt
-
+```bash
+pip install -r Backend/requirements.txt
+```
 
 ### 3. Configure Environment Variables
 
-Create a `.env` file inside the Backend directory.
+Create a `.env` file in the project root:
 
-
+```env
 GROQ_API_KEY=your_groq_api_key
+DATABASE_URL=your_postgresql_connection_string
+```
 
+Use your actual database connection string and API key.
 
-Configure your SQL Server connection string in the database configuration.
+**Important:** Never commit `.env` or expose API keys in GitHub.
 
-Make sure your database and required tables are created before starting the application.
+### 4. Run the Backend
 
-### 4. Start the Backend
+From the project root:
 
+```bash
+uvicorn Backend.main:app --reload
+```
 
-uvicorn app.main:app --reload
+Backend:
 
+```text
+http://localhost:8000
+```
 
-Backend URL:
+Swagger documentation:
 
-
-http://127.0.0.1:8000
-
-
-Swagger API Documentation:
-
-
-http://127.0.0.1:8000/docs
-
+```text
+http://localhost:8000/docs
+```
 
 ### 5. Frontend Setup
 
-Open another terminal and navigate to the frontend directory:
+Open another terminal:
 
-
+```bash
 cd Frontend
-
+```
 
 Install dependencies:
 
-
+```bash
 npm install
+```
 
+Run Angular:
 
-Start the Angular development server:
-
-
+```bash
 ng serve
+```
 
+Frontend:
 
-Open the application:
-
-
+```text
 http://localhost:4200
+```
 
+## ☁️ Deployment Architecture
 
-## 🔌 Core API Operations
+The application is deployed using Render.
 
-The application supports the following task management operations:
+| Component | Hosting |
+|---|---|
+| Angular Frontend | Render Static Site |
+| FastAPI Backend | Render Web Service |
+| PostgreSQL Database | Render PostgreSQL |
 
-| HTTP Method | Endpoint | Description |
-|---|---|---|
-| GET | `/api/tasks` | Retrieve all tasks |
-| GET | `/api/tasks/{task_id}` | Retrieve a task by ID |
-| POST | `/api/tasks` | Create a new task |
-| PATCH | `/api/tasks/{task_id}` | Update an existing task |
-| DELETE | `/api/tasks/{task_id}` | Delete a task |
+### Backend Deployment
 
-*Note: These are the documented core backend operations. Refer to the FastAPI Swagger documentation for the actual implemented routes and request schemas.*
+- Connect the GitHub repository to Render.
+- Configure the backend service to use the project root.
+- Install dependencies using `pip install -r Backend/requirements.txt`.
+- Start the application using:
 
-## 💬 Example AI Commands
+```bash
+uvicorn Backend.main:app --host 0.0.0.0 --port $PORT
+```
 
-Users can interact with the AI agent using instructions such as:
+- Configure production environment variables in Render.
+- Use the PostgreSQL Internal Database URL for the deployed backend.
 
+### Frontend Deployment
 
-Show me all tasks.
+- Create a Render Static Site.
+- Select the same GitHub repository.
+- Set the root directory to `Frontend`.
+- Build command:
 
-Get all pending tasks.
+```bash
+npm install && npm run build
+```
 
-Create a task to learn Azure DevOps.
+- Publish directory:
 
-Update task 3 and mark it as Completed.
+```text
+dist/frontend
+```
 
-Delete task 5.
+- Configure the production Angular environment to point to the deployed backend API.
 
-Show me the details of task 2.
+### Production API Communication
 
+The AI agent's task tools communicate with the Task API running inside the same backend service.
 
-The agent interprets the request, selects the appropriate tool, and executes the corresponding operation through the backend.
+The API base URL supports environment-based configuration and uses the Render-provided port in production, with localhost port 8000 as the local development fallback.
 
-## 🗄️ Database
+CORS is configured to allow the deployed Angular frontend origin.
 
-The application uses **Microsoft SQL Server** for persistent task storage.
+## 🔄 CI/CD Pipeline
 
-- Database: `AITaskAssistantDB`
-- ORM: SQLAlchemy
-- Database approach: Database First
-- Data validation: Pydantic
+GitHub Actions automates basic application checks whenever changes are pushed to the `main` branch or a pull request is created.
 
-SQLAlchemy models are mapped to the existing database schema.
+### Backend CI
+- Set up Python.
+- Install backend dependencies.
+- Compile Python modules to check syntax.
 
-## 🔐 Configuration and Security
+### Frontend CI
+- Set up Node.js.
+- Install npm dependencies.
+- Run the Angular production build.
 
-- Store API keys and database credentials in environment variables.
-- Exclude `.env` and virtual environment folders from Git.
-- Validate incoming requests using Pydantic.
-- Handle API and database errors appropriately.
-- Configure CORS to allow communication between Angular and FastAPI.
+### Deployment Workflow
 
-## 🎯 Key Concepts Demonstrated
+```mermaid
+flowchart TD
+    A[Developer Changes Code] --> B[Git Commit]
+    B --> C[Push to GitHub]
+    C --> D[GitHub Actions]
+    D --> E[Backend CI]
+    D --> F[Frontend CI]
+    E --> G[CI Results]
+    F --> G
+    C --> H[Render Auto Deploy]
+    H --> I[Backend / Frontend Deployment]
+```
 
-This project demonstrates practical implementation of:
+Render Auto-Deploy is configured to detect new commits pushed to the connected branch.
 
-- Large Language Model (LLM) integration.
-- AI agents and agent orchestration.
-- LangChain tool calling.
-- Natural-language-to-action workflows.
-- REST API integration with AI agents.
-- FastAPI backend development.
-- Angular frontend development.
-- SQL Server database integration.
-- SQLAlchemy ORM and database-first development.
-- Pydantic data validation.
-- Full-stack application architecture.
+## 🔐 Security Considerations
+
+- Store sensitive configuration in environment variables.
+- Never commit API keys or database credentials.
+- Restrict CORS to trusted frontend origins.
+- Use HTTPS for production communication.
+- Keep database credentials out of source code.
+
+## 🎯 Learning Outcomes
+
+This project demonstrates practical experience with:
+
+- Building REST APIs using FastAPI.
+- Developing AI agents using LangChain.
+- Integrating LLMs through Groq.
+- Implementing tool calling for real-world operations.
+- Connecting Python applications to PostgreSQL using SQLAlchemy.
+- Developing frontend applications using Angular.
+- Integrating frontend and backend applications.
+- Deploying full-stack applications on Render.
+- Configuring GitHub Actions CI workflows.
+- Implementing environment-based application configuration.
 
 ## 👨‍💻 Author
 
 **Prasanth Pali**
 
-- GitHub: https://github.com/Prasanth-Pali
+GitHub: https://github.com/Prasanth-Pali
 
 ---
 
-⭐ If you find this project interesting, consider giving it a star!
-
-**Built to explore practical AI agents, LLM tool calling, and full-stack application development.**
+⭐ If you find this project useful, consider giving it a star!
