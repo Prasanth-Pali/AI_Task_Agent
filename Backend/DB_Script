@@ -1,0 +1,84 @@
+
+-- ============================================
+-- AI TASK MANAGEMENT AGENT
+-- Complete Database Creation Script
+-- Database: AITaskAssistantDB
+-- ============================================
+
+-- 1. Create Database
+USE master;
+GO
+
+IF DB_ID('AITaskAssistantDB') IS NULL
+BEGIN
+    CREATE DATABASE AITaskAssistantDB;
+END
+GO
+
+-- 2. Switch to Database
+USE AITaskAssistantDB;
+GO
+
+-- 3. Create Tasks Table
+CREATE TABLE dbo.Tasks
+(
+    TaskId INT IDENTITY(1,1) NOT NULL,
+
+    Title NVARCHAR(200) NOT NULL,
+
+    Status NVARCHAR(20) NOT NULL
+        CONSTRAINT DF_Tasks_Status
+        DEFAULT ('Pending'),
+
+    CreatedAtUtc DATETIME2 NOT NULL
+        CONSTRAINT DF_Tasks_CreatedAtUtc
+        DEFAULT (SYSUTCDATETIME()),
+
+    Description NVARCHAR(1000) NULL,
+
+    DueDateUtc DATETIME2 NULL,
+
+    UpdatedAtUtc DATETIME2 NULL,
+
+    CONSTRAINT PK_Tasks
+        PRIMARY KEY (TaskId)
+);
+GO
+
+-- 4. Insert Sample Tasks
+INSERT INTO dbo.Tasks
+    (Title, Description, DueDateUtc)
+VALUES
+    (
+        'Learn ASP.NET Core',
+        'Understand Web API development',
+        '2026-11-10 10:00:00'
+    ),
+    (
+        'Build AI Agent',
+        'Implement task management agent using LangChain',
+        '2026-11-15 10:00:00'
+    ),
+    (
+        'Learn SQLAlchemy',
+        'Understand ORM and database sessions',
+        NULL
+    ),
+    (
+        'Learn RAG',
+        'Understand embeddings and vector databases',
+        '2026-11-20 10:00:00'
+    );
+GO
+
+-- 5. Verify Database
+SELECT DB_NAME() AS CurrentDatabase;
+GO
+
+-- 6. Verify Table Records
+SELECT * FROM dbo.Tasks;
+GO
+
+-- 7. Verify Table Structure
+EXEC sp_help 'dbo.Tasks';
+GO
