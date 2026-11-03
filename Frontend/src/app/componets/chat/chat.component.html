@@ -1,0 +1,275 @@
+
+<div class="chat-layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+
+    <!-- Sidebar Header -->
+    <div class="sidebar-header">
+      <div class="app-logo">
+        <i class="bi bi-robot"></i>
+      </div>
+
+      <span>Task Assistant</span>
+    </div>
+
+    <!-- New Chat -->
+    <button class="new-chat-btn" (click)="newChat()">
+      <i class="bi bi-plus-lg"></i>
+      New Chat
+    </button>
+
+    <!-- Chat History -->
+    <div class="chat-history">
+
+      <span class="sidebar-label">RECENT CHATS</span>
+
+      <div
+        class="history-item"
+        *ngFor="let chat of chatHistory"
+        [class.active]="currentChat?.sessionId === chat.sessionId"
+        (click)="openChat(chat.sessionId)">
+
+        <i class="bi bi-chat-left-text"></i>
+
+        <span class="chat-title">
+          {{ chat.title }}
+        </span>
+
+        <button
+          class="delete-chat-btn"
+          title="Delete chat"
+          (click)="deleteChat(chat.sessionId, $event)">
+
+          <i class="bi bi-trash"></i>
+
+        </button>
+
+      </div>
+
+      <p class="empty-history" *ngIf="chatHistory.length === 0">
+        No chat history yet.
+      </p>
+
+    </div>
+
+    <!-- Assistant Information -->
+    <div class="sidebar-info">
+
+      <span class="sidebar-label">YOUR ASSISTANT</span>
+
+      <div class="sidebar-item">
+        <i class="bi bi-check2-square"></i>
+        Task Management
+      </div>
+
+      <div class="sidebar-item">
+        <i class="bi bi-database"></i>
+        SQL Server
+      </div>
+
+    </div>
+
+    <!-- Sidebar Footer -->
+    <div class="sidebar-footer">
+      <i class="bi bi-stars"></i>
+      Powered by AI
+    </div>
+
+  </aside>
+
+
+  <!-- Main Chat Area -->
+  <main class="chat-main">
+
+    <!-- Header -->
+    <header class="chat-header">
+
+      <div>
+        <h3>AI Task Assistant</h3>
+
+        <span class="online-status">
+          <span class="status-dot"></span>
+          Ready to help
+        </span>
+      </div>
+
+    </header>
+
+
+    <!-- Messages -->
+    <section class="messages-container" #chatContainer>
+
+      <!-- Welcome Screen -->
+      <div class="welcome-screen" *ngIf="messages.length === 0">
+
+        <div class="welcome-icon">
+          <i class="bi bi-stars"></i>
+        </div>
+
+        <h1>How can I help you today?</h1>
+
+        <p>
+          Ask me anything about your tasks.
+          I can retrieve, create, update and delete tasks.
+        </p>
+
+        <!-- Suggested Questions -->
+        <div class="suggestion-grid">
+
+          <button
+            class="suggestion-card"
+            (click)="askSuggestion('Show me all my tasks')">
+
+            <i class="bi bi-list-task"></i>
+
+            <div>
+              <strong>Show all tasks</strong>
+              <span>View your complete task list</span>
+            </div>
+
+          </button>
+
+          <button
+            class="suggestion-card"
+            (click)="askSuggestion('How many tasks are pending?')">
+
+            <i class="bi bi-hourglass-split"></i>
+
+            <div>
+              <strong>Pending tasks</strong>
+              <span>Check your pending work</span>
+            </div>
+
+          </button>
+
+          <button
+            class="suggestion-card"
+            (click)="askSuggestion('Show me overdue tasks')">
+
+            <i class="bi bi-calendar-x"></i>
+
+            <div>
+              <strong>Overdue tasks</strong>
+              <span>Find delayed tasks</span>
+            </div>
+
+          </button>
+
+          <button
+            class="suggestion-card"
+            (click)="askSuggestion('Give me a summary of my tasks')">
+
+            <i class="bi bi-graph-up"></i>
+
+            <div>
+              <strong>Task summary</strong>
+              <span>Understand your productivity</span>
+            </div>
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- Chat Messages -->
+      <div
+        class="message-row"
+        *ngFor="let message of messages"
+        [class.user-row]="message.role === 'user'">
+
+        <!-- AI Avatar -->
+        <div
+          class="avatar ai-avatar"
+          *ngIf="message.role === 'assistant'">
+
+          <i class="bi bi-robot"></i>
+
+        </div>
+
+        <!-- Message Content -->
+        <div class="message-content">
+
+          <div class="message-name">
+            {{ message.role === 'user' ? 'You' : 'AI Assistant' }}
+          </div>
+
+          <div class="message-bubble">
+            <markdown [data]="message.content"></markdown>
+          </div>
+
+        </div>
+
+        <!-- User Avatar -->
+        <div
+          class="avatar user-avatar"
+          *ngIf="message.role === 'user'">
+
+          <i class="bi bi-person"></i>
+
+        </div>
+
+      </div>
+
+
+      <!-- Loading Indicator -->
+      <div class="message-row" *ngIf="isLoading">
+
+        <div class="avatar ai-avatar">
+          <i class="bi bi-robot"></i>
+        </div>
+
+        <div class="message-content">
+
+          <div class="message-name">
+            AI Assistant
+          </div>
+
+          <div class="typing-indicator">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- Input Area -->
+    <footer class="chat-footer">
+
+      <div class="input-wrapper">
+
+        <textarea
+          [(ngModel)]="question"
+          (keydown)="handleKeydown($event)"
+          placeholder="Ask anything about your tasks..."
+          rows="1"
+          [disabled]="isLoading">
+        </textarea>
+
+        <button
+          class="send-btn"
+          (click)="sendMessage()"
+          [disabled]="!question.trim() || isLoading">
+
+          <i class="bi bi-arrow-up"></i>
+
+        </button>
+
+      </div>
+
+      <p class="footer-note">
+        AI can make mistakes. Verify important task changes.
+      </p>
+
+    </footer>
+
+  </main>
+
+</div>
