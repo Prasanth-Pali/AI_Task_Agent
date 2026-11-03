@@ -4,8 +4,12 @@ from typing import Literal
 import requests
 from langchain.tools import tool
 
+import os
 
-API_BASE_URL = "http://127.0.0.1:8000"
+API_BASE_URL = os.getenv(
+    "TASK_API_BASE_URL",
+    f"http://127.0.0.1:{os.getenv('PORT', '8000')}"
+).rstrip("/")
 
 TaskStatus = Literal["Pending", "InProgress", "Completed"]
 
