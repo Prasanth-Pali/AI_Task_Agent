@@ -1,380 +1,201 @@
-# 🤖 AI Task Agent
+# AI Task Agent
 
-An AI-powered Task Management application built using **FastAPI, Angular, LangChain, Groq LLM, and PostgreSQL**. It allows users to manage tasks using natural language while providing traditional REST APIs for task operations.
+AI Task Agent is a full-stack task management application that combines an Angular frontend, a FastAPI backend, and a LangChain-powered AI assistant. Users can manage tasks through a chat interface or by calling the REST API directly. The system uses PostgreSQL for persistence and Groq for LLM inference.
 
-The AI agent understands user instructions, selects the appropriate tools, communicates with the Task API, and performs task operations against the database.
+## Overview
 
-## 🚀 Live Application
+This project allows users to:
 
-- **Frontend:** https://ai-task-agent-frontend-0h60.onrender.com/
-- **Backend API:** https://ai-task-agent-urna.onrender.com
-- **Swagger Documentation:** https://ai-task-agent-urna.onrender.com/docs
+- create, update, view, and delete tasks
+- use natural-language prompts to interact with the AI agent
+- retrieve task data from PostgreSQL through a FastAPI API
+- operate the frontend and backend in a single local or containerized environment
 
-## ✨ Features
+## Tech Stack
 
-### 🤖 AI-Powered Task Assistant
-- Interact with the application using natural language.
-- Retrieve all tasks through conversational commands.
-- Create tasks with titles, descriptions, due dates, and statuses.
-- Update existing tasks.
-- Delete tasks using their Task IDs.
-- Uses LangChain tools to connect the AI agent with backend functionality.
+- Frontend: Angular 17, TypeScript, HTML, CSS
+- Backend: FastAPI, SQLAlchemy, Pydantic
+- AI: LangChain, LangChain Groq
+- Database: PostgreSQL
+- Runtime: Python 3.12, Node.js 20
+- Containerization: Docker, Docker Compose
 
-### 📋 Task Management
-- Create, retrieve, update, and delete tasks.
-- Manage task statuses:
-  - Pending
-  - InProgress
-  - Completed
-- Store task descriptions and due dates.
-- Persist task records in PostgreSQL.
-
-### 🔧 Backend
-- RESTful APIs built using FastAPI.
-- SQLAlchemy for database connectivity and ORM.
-- Centralized API communication through reusable functions.
-- HTTP error handling and request timeouts.
-- CORS configuration for frontend-backend communication.
-
-### 🎨 Frontend
-- Angular standalone components.
-- Chat-based user interface.
-- Integration with FastAPI endpoints.
-- HTTP communication through Angular services.
-
-### ☁️ Deployment & CI/CD
-- Backend deployed on Render.
-- Angular frontend deployed as a Render Static Site.
-- PostgreSQL database hosted on Render.
-- GitHub Actions for automated CI checks.
-- Automatic deployment through Render when changes are pushed to GitHub.
-
-## 🛠️ Technology Stack
-
-| Category | Technologies |
-|---|---|
-| Frontend | Angular, TypeScript, HTML, CSS |
-| Backend | Python, FastAPI |
-| AI Framework | LangChain |
-| LLM Provider | Groq |
-| Database | PostgreSQL |
-| ORM | SQLAlchemy |
-| HTTP Client | Requests |
-| API Documentation | Swagger / OpenAPI |
-| Version Control | Git, GitHub |
-| CI/CD | GitHub Actions |
-| Cloud Hosting | Render |
-
-## 🏗️ Application Architecture
-
-```mermaid
-flowchart TD
-    A[User] --> B[Angular Frontend]
-    B -->|HTTP Requests| C[FastAPI Backend]
-    C --> D[LangChain AI Agent]
-    D --> E[Groq LLM]
-    D --> F[Task Management Tools]
-    F -->|Internal HTTP Requests| C
-    C --> G[SQLAlchemy ORM]
-    G --> H[(PostgreSQL Database)]
-    H --> G
-    G --> C
-    C --> B
-    B --> A
-```
-
-### AI Agent Workflow
-
-1. The user enters a natural language instruction in the Angular chat interface.
-2. Angular sends the request to the FastAPI chat endpoint.
-3. LangChain passes the user's question to the Groq-powered AI agent.
-4. The agent identifies the appropriate task management tool.
-5. The selected tool sends an HTTP request to the Task API.
-6. FastAPI processes the request and communicates with PostgreSQL through SQLAlchemy.
-7. The result is returned to the AI agent.
-8. The agent generates a user-friendly response.
-9. Angular displays the final response.
-
-## 📁 Project Structure
+## Project Structure
 
 ```text
 AI_Task_Agent/
-│
 ├── Backend/
-│   ├── main.py
+│   ├── __init__.py
 │   ├── database.py
+│   ├── llm.py
+│   ├── main.py
+│   ├── migrate_data.py
 │   ├── models.py
-│   ├── tools.py
 │   ├── requirements.txt
-│   └── ...
-│
+│   ├── schemas.py
+│   └── tools.py
 ├── Frontend/
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── components/
-│   │   │   ├── services/
-│   │   │   └── ...
-│   │   └── environments/
 │   ├── angular.json
 │   ├── package.json
+│   ├── src/
+│   ├── tsconfig.json
+│   ├── tsconfig.app.json
+│   ├── tsconfig.spec.json
 │   └── ...
-│
-├── .github/
-│   └── workflows/
-│       └── ci-cd.yml
-│
-├── .env
-├── .gitignore
-└── README.md
+├── .dockerignore
+├── .env.example
+├── docker-compose.yml
+├── Dockerfile
+├── README.md
+└── .gitignore
 ```
 
-## 🗄️ Database Design
+## Features
 
-The application uses PostgreSQL to persist task information.
+- AI-powered chat assistant for task operations
+- CRUD endpoints for tasks
+- PostgreSQL-backed data storage
+- Angular frontend with task history and chat session support
+- FastAPI Swagger API documentation
+- Dockerized setup for local development and deployment
 
-### Tasks Table
+## Application Flow
 
-| Column | Description |
-|---|---|
-| TaskId | Unique task identifier |
-| Title | Task title |
-| Status | Current task status |
-| CreatedAtUtc | Task creation timestamp |
-| Description | Optional task description |
-| DueDateUtc | Optional task due date |
-| UpdatedAtUtc | Last updated timestamp |
-
-SQLAlchemy models are used to map application objects to database records.
-
-## 🔌 API Endpoints
-
-Base URL:
-
-```text
-https://ai-task-agent-urna.onrender.com
+```mermaid
+flowchart LR
+    User --> Frontend
+    Frontend -->|HTTP| Backend
+    Backend --> AI_Agent
+    AI_Agent --> Groq
+    AI_Agent --> Tools
+    Tools --> Backend
+    Backend --> PostgreSQL
 ```
 
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/api/tasks` | Retrieve all tasks |
-| POST | `/api/tasks` | Create a task |
-| PATCH | `/api/tasks/{task_id}` | Update a task |
-| DELETE | `/api/tasks/{task_id}` | Delete a task |
-| POST | `/api/chat` | Interact with the AI assistant |
+## Environment Variables
 
-Interactive API documentation:
+Create a `.env` file in the project root before starting the app locally or with Docker.
 
-`/docs`
+```env
+GROQ_API_KEY=your_groq_api_key_here
+DATABASE_URL=postgresql+psycopg://username:password@host:5432/database_name
+```
 
-## ⚙️ Local Development Setup
+You can copy the provided example file:
+
+```bash
+cp .env.example .env
+```
+
+## Local Development
 
 ### Prerequisites
 
 - Python 3.11+
-- Node.js and npm
-- Angular CLI
-- Git
+- Node.js 18+ or 20+
+- npm
 - PostgreSQL database
 - Groq API key
 
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/Prasanth-Pali/AI_Task_Agent.git
-
-cd AI_Task_Agent
-```
-
-### 2. Backend Setup
-
-Navigate to the project root and create a virtual environment:
+### 1. Backend setup
 
 ```bash
 python -m venv .venv
 ```
 
-Activate it on Windows PowerShell:
+On Windows PowerShell:
 
 ```powershell
 .venv\Scripts\Activate.ps1
 ```
 
-Install backend dependencies:
+On macOS/Linux:
+
+```bash
+source .venv/bin/activate
+```
+
+Install backend packages:
 
 ```bash
 pip install -r Backend/requirements.txt
 ```
 
-### 3. Configure Environment Variables
+### 2. Frontend setup
 
-Create a `.env` file in the project root:
-
-```env
-GROQ_API_KEY=your_groq_api_key
-DATABASE_URL=your_postgresql_connection_string
+```bash
+cd Frontend
+npm install
 ```
 
-Use your actual database connection string and API key.
-
-**Important:** Never commit `.env` or expose API keys in GitHub.
-
-### 4. Run the Backend
+### 3. Start the backend
 
 From the project root:
 
 ```bash
-uvicorn Backend.main:app --reload
+uvicorn Backend.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Backend:
+Open:
 
-```text
-http://localhost:8000
-```
+- API: http://localhost:8000
+- Swagger docs: http://localhost:8000/docs
 
-Swagger documentation:
+### 4. Start the frontend
 
-```text
-http://localhost:8000/docs
-```
-
-### 5. Frontend Setup
-
-Open another terminal:
+In a second terminal:
 
 ```bash
 cd Frontend
+npm start
 ```
 
-Install dependencies:
+Open:
+
+- Frontend: http://localhost:4200
+
+## Running with Docker
+
+The project includes a root `Dockerfile` and `docker-compose.yml` for a full-stack setup.
+
+### Option 1: Use Docker Compose
 
 ```bash
-npm install
+cp .env.example .env
+docker compose up --build
 ```
 
-Run Angular:
+Then open:
+
+- Frontend: http://localhost:4200
+- Backend: http://localhost:8000
+- Swagger docs: http://localhost:8000/docs
+
+### Option 2: Build and run the container manually
 
 ```bash
-ng serve
+docker build -t ai-task-agent .
+docker run --env-file .env -p 8000:8000 -p 4200:4200 ai-task-agent
 ```
 
-Frontend:
+## API Endpoints
 
-```text
-http://localhost:4200
-```
+The backend exposes task and AI endpoints.
 
-## ☁️ Deployment Architecture
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/tasks` | Get all tasks |
+| POST | `/api/tasks` | Create a task |
+| PATCH | `/api/tasks/{task_id}` | Update a task |
+| DELETE | `/api/tasks/{task_id}` | Delete a task |
+| POST | `/api/chat` | Ask the AI assistant a task-related question |
 
-The application is deployed using Render.
+## Notes
 
-| Component | Hosting |
-|---|---|
-| Angular Frontend | Render Static Site |
-| FastAPI Backend | Render Web Service |
-| PostgreSQL Database | Render PostgreSQL |
+- The Angular app expects the backend to run on port 8000 during local development.
+- The Docker container serves the built Angular app on port 4200 and the FastAPI backend on port 8000.
+- Do not commit your `.env` file with real credentials.
 
-### Backend Deployment
+## Author
 
-- Connect the GitHub repository to Render.
-- Configure the backend service to use the project root.
-- Install dependencies using `pip install -r Backend/requirements.txt`.
-- Start the application using:
-
-```bash
-uvicorn Backend.main:app --host 0.0.0.0 --port $PORT
-```
-
-- Configure production environment variables in Render.
-- Use the PostgreSQL Internal Database URL for the deployed backend.
-
-### Frontend Deployment
-
-- Create a Render Static Site.
-- Select the same GitHub repository.
-- Set the root directory to `Frontend`.
-- Build command:
-
-```bash
-npm install && npm run build
-```
-
-- Publish directory:
-
-```text
-dist/frontend
-```
-
-- Configure the production Angular environment to point to the deployed backend API.
-
-### Production API Communication
-
-The AI agent's task tools communicate with the Task API running inside the same backend service.
-
-The API base URL supports environment-based configuration and uses the Render-provided port in production, with localhost port 8000 as the local development fallback.
-
-CORS is configured to allow the deployed Angular frontend origin.
-
-## 🔄 CI/CD Pipeline
-
-GitHub Actions automates basic application checks whenever changes are pushed to the `main` branch or a pull request is created.
-
-### Backend CI
-- Set up Python.
-- Install backend dependencies.
-- Compile Python modules to check syntax.
-
-### Frontend CI
-- Set up Node.js.
-- Install npm dependencies.
-- Run the Angular production build.
-
-### Deployment Workflow
-
-```mermaid
-flowchart TD
-    A[Developer Changes Code] --> B[Git Commit]
-    B --> C[Push to GitHub]
-    C --> D[GitHub Actions]
-    D --> E[Backend CI]
-    D --> F[Frontend CI]
-    E --> G[CI Results]
-    F --> G
-    C --> H[Render Auto Deploy]
-    H --> I[Backend / Frontend Deployment]
-```
-
-Render Auto-Deploy is configured to detect new commits pushed to the connected branch.
-
-## 🔐 Security Considerations
-
-- Store sensitive configuration in environment variables.
-- Never commit API keys or database credentials.
-- Restrict CORS to trusted frontend origins.
-- Use HTTPS for production communication.
-- Keep database credentials out of source code.
-
-## 🎯 Learning Outcomes
-
-This project demonstrates practical experience with:
-
-- Building REST APIs using FastAPI.
-- Developing AI agents using LangChain.
-- Integrating LLMs through Groq.
-- Implementing tool calling for real-world operations.
-- Connecting Python applications to PostgreSQL using SQLAlchemy.
-- Developing frontend applications using Angular.
-- Integrating frontend and backend applications.
-- Deploying full-stack applications on Render.
-- Configuring GitHub Actions CI workflows.
-- Implementing environment-based application configuration.
-
-## 👨‍💻 Author
-
-**Prasanth Pali**
-
-GitHub: https://github.com/Prasanth-Pali
-
----
-
-⭐ If you find this project useful, consider giving it a star!
+Prasanth Pali
